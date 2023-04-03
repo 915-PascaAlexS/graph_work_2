@@ -13,17 +13,14 @@ class Ui:
             '6': self.getNumberOfEdges,
             '7': self.parseTheSetOfVertices,
             '8': self.verifyIfThereIsAnEdgeBetweenTwoVertices,
-            '9': self.getInDegreeOfAVertex,
-            '10': self.getOutDegreeOfAVertex,
-            '11': self.parseSetOfOutboundEdgesOfAVertex,
-            '12': self.parseSetOfInboundEdgesOfAVertex,
-            '13': self.getTheCostOfASpecifiedEdge,
-            '14': self.changeTheCostOfASpecifiedEdge,
-            '15': self.createRandomGraph,
-            '16': self.createACopyOfTheGraph,
-            '17': self.readGraphFromTextFile,
-            '18': self.writeGraphToTextFile,
-            '19': self.switchCurrentGraph
+            '9': self.getDegreeOfAVertex,
+            '10': self.parseSetOfEdgesOfAVertex,
+            '11': self.createRandomGraph,
+            '12': self.createACopyOfTheGraph,
+            '13': self.readGraphFromTextFile,
+            '14': self.writeGraphToTextFile,
+            '15': self.switchCurrentGraph,
+            '16': self.findConnectedComponentsOfGraph
         }
         self.__listOfGraphs = []
         self.__indexOfCurrentGraph = None
@@ -63,44 +60,17 @@ class Ui:
         else:
             print(f"The edge ({sourceVertex}, {targetVertex}) doesn't exist!")
 
-    def getInDegreeOfAVertex(self):
+    def getDegreeOfAVertex(self):
         givenVertex = int(input("Enter a vertex: "))
-        inDegree = self.__listOfGraphs[self.__indexOfCurrentGraph].getInDegreeOfGivenVertex(givenVertex)
-        print(f"The in degree of vertex {givenVertex} is: {inDegree}")
+        degree = self.__listOfGraphs[self.__indexOfCurrentGraph].getInDegreeGivenVertex(givenVertex)
+        print(f"The in degree of vertex {givenVertex} is: {degree}")
 
-
-    def getOutDegreeOfAVertex(self):
-        givenVertex = int(input("Enter a vertex: "))
-        outDegree = self.__listOfGraphs[self.__indexOfCurrentGraph].getOutDegreeOfGivenVertex(givenVertex)
-        print(f"The out degree of vertex {givenVertex} is: {outDegree}")
-
-    def parseSetOfOutboundEdgesOfAVertex(self):
+    def parseSetOfEdgesOfAVertex(self):
         listOfAllSuccessorsOfGivenVertex = []
         givenVertex = int(input("Enter a vertex: "))
-        for successor in self.__listOfGraphs[self.__indexOfCurrentGraph].parseSetOfOutboundEdgesOfAVertex(givenVertex):
+        for successor in self.__listOfGraphs[self.__indexOfCurrentGraph].parseSetOfEdgesOfAVertex(givenVertex):
             listOfAllSuccessorsOfGivenVertex.append(successor)
         print(*listOfAllSuccessorsOfGivenVertex)
-
-    def parseSetOfInboundEdgesOfAVertex(self):
-        listOfAllPredecessorsOfAGivenVertex = []
-        givenVertex = int(input("Enter a vertex: "))
-        for predecessor in self.__listOfGraphs[self.__indexOfCurrentGraph].parseSetOfInboundEdgesOfAVertex(givenVertex):
-            listOfAllPredecessorsOfAGivenVertex.append(predecessor)
-        print(*listOfAllPredecessorsOfAGivenVertex)
-
-
-    def getTheCostOfASpecifiedEdge(self):
-        sourceVertex = int(input("Enter the source vertex of the edge: "))
-        targetVertex = int(input("Enter the target vertex of the edge: "))
-        costOfEdge = self.__listOfGraphs[self.__indexOfCurrentGraph].getCostOfGivenEdge(sourceVertex, targetVertex)
-        print(f"The cost of the edge ({sourceVertex},{targetVertex}) is: {costOfEdge}")
-
-    def changeTheCostOfASpecifiedEdge(self):
-        sourceVertex = int(input("Enter the source vertex of the edge: "))
-        targetVertex = int(input("Enter the target vertex of the edge: "))
-        newCostOfTheEdge = int(input("Enter the new cost of the edge: "))
-        self.__listOfGraphs[self.__indexOfCurrentGraph].updateTheCostOfGivenEdge(sourceVertex, targetVertex, newCostOfTheEdge)
-        print("Successfully!")
 
     def addVertex(self):
         newVertex = int(input("Enter the new vertex: "))
@@ -113,12 +83,13 @@ class Ui:
         print("Successfully!")
 
     def addEdge(self):
-        print("Add an edge, provide source vertex, target vertex and the cost of the edge: ")
+        print("Add an edge, provide source vertex and target vertex: ")
         sourceVertex = int(input("Source vertex: "))
         targetVertex = int(input("Target vertex: "))
-        costOfEdge = int(input("Cost of edge: "))
-        self.__listOfGraphs[self.__indexOfCurrentGraph].addNewEdge(sourceVertex, targetVertex, costOfEdge)
-        print("Successfully!")
+        if self.__listOfGraphs[self.__indexOfCurrentGraph].addNewEdge(sourceVertex, targetVertex):
+            print("Successfully!")
+        else:
+            print("Edge already exists!")
 
     def removeEdge(self):
         sourceVertex = int(input("Source vertex: "))
@@ -156,6 +127,10 @@ class Ui:
         self.__indexOfCurrentGraph = newIndex
         print("Successfully!")
 
+    def findConnectedComponentsOfGraph(self):
+        connectedComponents = self.__listOfGraphs[self.__indexOfCurrentGraph].findConnectedComponents()
+        print(*connectedComponents)
+
     @staticmethod
     def displayMenu():
         print("Menu:")
@@ -167,17 +142,14 @@ class Ui:
         print("\t6. Get the number of edges.")
         print("\t7. Parse the set of vertices.")
         print("\t8. Verify if there is an edge between two vertices.")
-        print("\t9. Get the in degree of a vertex.")
-        print("\t10. Get the out degree of a vertex.")
-        print("\t11. Parse the set of outbound edges of a vertex.")
-        print("\t12. Parse the set of inbound edges of a vertex.")
-        print("\t13. Get the cost of a specified edge.")
-        print("\t14. Change the cost of a specified edge.")
-        print("\t15. Create a random graph with specified number of vertices and of edges.")
-        print("\t16. Make a copy of the graph.")
-        print("\t17. Read a graph from a text file.")
-        print("\t18. Write the graph in a text file.")
-        print("\t19. Switch between existing graphs.")
+        print("\t9. Get the degree of a vertex.")
+        print("\t10. Parse the set of edges of a vertex.")
+        print("\t11. Create a random graph with specified number of vertices and of edges.")
+        print("\t12. Make a copy of the graph.")
+        print("\t13. Read a graph from a text file.")
+        print("\t14. Write the graph in a text file.")
+        print("\t15. Switch between existing graphs.")
+        print("\t16. Find all connected components of the graph using breadth first.")
         print("\t0. Exit.")
 
 
